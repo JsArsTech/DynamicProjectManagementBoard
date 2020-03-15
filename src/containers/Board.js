@@ -15,7 +15,7 @@ const BoardWrapper = styled.div`
 	}
 `;
 
-
+/*
 const Board = ({ lanes, loading, error, data }) => (
 	<BoardWrapper>
 		{
@@ -31,53 +31,28 @@ const Board = ({ lanes, loading, error, data }) => (
 		}
 	</BoardWrapper>
 );
+*/
 
-export default withDataFetching(Board);
-
-/*
 class Board extends Component {
 
 	constructor() {
 		super();
 		this.state = {
-			data: [],
-			loading: true,
-			error: ''
+			tickets: []
 		}
-	}
+	} 
 
-	async componentDidMount() {
-
-		try {
-			//const tickets = await fetch('../../assets/data.json');
-			//const ticketsJSON = await tickets.json();
-			const tickets = await fetch('./data.json');
-			const ticketsJSON = await tickets.json();			
-
-			if (ticketsJSON) {
-				this.setState({
-					data: ticketsJSON,
-					loading: false
-				});
-			}
-		}
-		catch (error) {
+	componentDidUpdate(prevProps) {
+		if (prevProps.data !== this.props.data) {
 			this.setState({
-				loading: false,
-				error: error.message
-			});
+				tickets: this.props.data
+			})
 		}
 	}
 
 	render() {
-		const { data, loading, error } = this.state;
-
-		const lanes = [
-			{ id: 1, title: 'To Do' },
-			{ id: 2, title: 'In Progress' },
-			{ id: 3, title: 'Review' },
-			{ id: 4, title: 'Done' }
-		];
+		
+		const { lanes, loading, error } = this.props;
 
 		return (
 			<BoardWrapper>
@@ -88,7 +63,7 @@ class Board extends Component {
 							title={lane.title}
 							loading={loading}
 							error={error}
-							tickets={data.filter(ticket => ticket.lane === lane.id)}
+							tickets={this.state.tickets.filter(ticket => ticket.lane === lane.id)}
 						/>
 					)
 				}
@@ -98,5 +73,4 @@ class Board extends Component {
 
 } 
 
-export default Board;
-*/
+export default withDataFetching(Board);
