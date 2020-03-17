@@ -48,7 +48,33 @@ class Board extends Component {
 				tickets: this.props.data
 			})
 		}
-	}
+	} 
+
+	onDragStart = (e, id) => {
+		e.dataTransfer.setData('id', id);
+	};
+
+	onDragOver = e => {
+		e.preventDefault();
+	};
+
+	onDrop = (e, laneId) => {
+		const id = parseInt(e.dataTransfer.getData('id'));
+		
+		const tickets = this.state.tickets.filter(
+			ticket => {
+				if (ticket.id === id) {
+					ticket.lane = laneId;
+				}
+				return ticket;
+			}
+		);
+
+		this.setState({
+			...this.state,
+			tickets
+		});
+	};
 
 	render() {
 		
@@ -59,10 +85,14 @@ class Board extends Component {
 				{
 					lanes.map(lane => 
 						<Lane
-							key={lane.id}
+							key={lane.id} 
+							laneId={lane.id}
 							title={lane.title}
 							loading={loading}
 							error={error}
+							onDragStart={this.onDragStart}
+							onDragOver={this.onDragOver}
+							onDrop={this.onDrop}
 							tickets={this.state.tickets.filter(ticket => ticket.lane === lane.id)}
 						/>
 					)
